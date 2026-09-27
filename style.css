@@ -1,490 +1,250 @@
-* {
-    box-sizing: border-box;
-    user-select: none;
-}
-
-html,
-body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #05070d;
-    color: white;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-    background:
-        radial-gradient(circle at 50% 20%, #17254a 0%, #080b15 45%, #020307 100%);
-}
-
-.hidden {
-    display: none !important;
-}
-
-#loading {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    background:
-        radial-gradient(circle, #263d78 0%, #080b14 45%, #020307 100%);
-
-    font-size: 18px;
-}
-
-.loading-logo {
-    font-size: 70px;
-    font-weight: 1000;
-    font-style: italic;
-    letter-spacing: -5px;
-    text-shadow:
-        0 0 10px #00eaff,
-        0 0 35px #0077ff;
-    margin-bottom: 35px;
-}
-
-.loading-bar {
-    width: min(500px, 80vw);
-    height: 12px;
-    border-radius: 20px;
-    background: #202636;
-    overflow: hidden;
-    margin-bottom: 15px;
-}
-
-#loadingFill {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #00eaff, #7a5cff, #ff3cac);
-    transition: width .2s;
-}
-
-.screen {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background:
-        radial-gradient(circle at center, rgba(26,52,100,.75), rgba(2,4,9,.98));
-}
-
-.menu-box,
-.garage-box,
-.controller-box {
-    width: min(850px, 92vw);
-    padding: 45px;
-    text-align: center;
-
-    border: 1px solid rgba(255,255,255,.14);
-    border-radius: 30px;
-
-    background: rgba(10,15,30,.85);
-    box-shadow:
-        0 30px 100px rgba(0,0,0,.7),
-        inset 0 1px rgba(255,255,255,.08);
-
-    backdrop-filter: blur(20px);
-}
-
-.logo {
-    font-size: clamp(65px, 10vw, 125px);
-    line-height: .72;
-    font-weight: 1000;
-    font-style: italic;
-    letter-spacing: -8px;
-
-    color: white;
-
-    text-shadow:
-        5px 5px 0 #7c2cff,
-        10px 10px 0 #ff238d,
-        0 0 45px #00d9ff;
-}
-
-.logo span {
-    color: #00eaff;
-}
-
-.subtitle {
-    margin-top: 30px;
-    margin-bottom: 45px;
-
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: 14px;
-
-    color: #ff3cac;
-}
-
-button {
-    border: 0;
-    cursor: pointer;
-    color: white;
-    font-family: inherit;
-}
-
-.main-button,
-.menu-button {
-    display: block;
-    width: min(500px, 100%);
-    margin: 14px auto;
-
-    padding: 18px 25px;
-
-    border-radius: 15px;
-
-    font-size: 19px;
-    font-weight: 900;
-    letter-spacing: 1px;
-
-    transition:
-        transform .15s,
-        filter .15s,
-        box-shadow .15s;
-}
-
-.main-button {
-    background: linear-gradient(100deg, #00d9ff, #5266ff, #b52cff);
-    box-shadow:
-        0 10px 35px rgba(50,100,255,.35);
-}
-
-.menu-button {
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.12);
-}
-
-.main-button:hover,
-.menu-button:hover {
-    transform: translateY(-3px) scale(1.02);
-    filter: brightness(1.2);
-}
-
-.small-info {
-    margin-top: 35px;
-    color: #8993aa;
-    line-height: 1.8;
-    font-size: 13px;
-}
-
-.garage-box h1,
-.controller-box h1 {
-    font-size: 42px;
-    margin-top: 0;
-}
-
-.driver-list {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin: 30px 0;
-}
-
-.driver {
-    min-height: 180px;
-    border-radius: 20px;
-    padding: 20px;
-
-    background: #111827;
-    border: 2px solid transparent;
-
-    transition: .2s;
-}
-
-.driver:hover {
-    transform: translateY(-5px);
-}
-
-.driver.active {
-    border-color: #00eaff;
-    box-shadow: 0 0 30px rgba(0,220,255,.25);
-}
-
-.driver-icon {
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin: 0 auto 15px;
-
-    font-size: 40px;
-}
-
-.driver-icon.red {
-    background: #ed3158;
-}
-
-.driver-icon.blue {
-    background: #2e8cff;
-}
-
-.driver-icon.green {
-    background: #22c56b;
-}
-
-.driver-icon.purple {
-    background: #a44cff;
-}
-
-.driver b {
-    display: block;
-    font-size: 20px;
-}
-
-.driver small {
-    display: block;
-    color: #8d96aa;
-    margin-top: 8px;
-}
-
-.controller-url {
-    padding: 20px;
-    margin: 25px 0;
-
-    border-radius: 12px;
-    background: #050812;
-
-    color: #00eaff;
-    font-size: 18px;
-    word-break: break-all;
-}
-
-#game {
-    position: fixed;
-    inset: 0;
-}
-
-#gameCanvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-#hud {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-}
-
-.hud-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-
-    padding: 25px;
-}
-
-.position {
-    font-size: 70px;
-    font-weight: 1000;
-    font-style: italic;
-
-    text-shadow: 0 4px 15px #000;
-}
-
-.position small {
-    font-size: 18px;
-    color: #aaa;
-}
-
-.lap {
-    padding: 12px 25px;
-    border-radius: 14px;
-
-    background: rgba(5,10,20,.75);
-    border: 1px solid rgba(255,255,255,.15);
-
-    text-align: center;
-    font-size: 12px;
-}
-
-.lap b {
-    display: block;
-    font-size: 25px;
-    margin-top: 4px;
-}
-
-.speed {
-    text-align: right;
-}
-
-.speed b {
-    display: block;
-    font-size: 45px;
-}
-
-.speed small {
-    color: #aaa;
-}
-
-.item-box {
-    position: absolute;
-    left: 25px;
-    top: 135px;
-
-    width: 75px;
-    height: 75px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    border-radius: 18px;
-
-    background: rgba(5,10,20,.8);
-    border: 2px solid rgba(255,255,255,.25);
-
-    box-shadow: 0 8px 30px rgba(0,0,0,.4);
-}
-
-#itemIcon {
-    font-size: 40px;
-}
-
-.nitro-box {
-    position: absolute;
-    bottom: 25px;
-    left: 25px;
-    width: 280px;
-}
-
-.nitro-title {
-    font-size: 12px;
-    font-weight: 900;
-    margin-bottom: 7px;
-}
-
-.nitro-bar {
-    height: 12px;
-    border-radius: 20px;
-    background: rgba(255,255,255,.15);
-    overflow: hidden;
-}
-
-#nitroFill {
-    height: 100%;
-    width: 100%;
-    background: linear-gradient(90deg, #00d9ff, #aa2cff);
-    box-shadow: 0 0 15px #00d9ff;
-}
-
-.room-code {
-    position: absolute;
-    right: 25px;
-    bottom: 25px;
-
-    padding: 12px 18px;
-    border-radius: 12px;
-
-    background: rgba(5,10,20,.8);
-    color: #00eaff;
-    font-weight: 900;
-}
-
-.countdown {
-    position: fixed;
-    inset: 0;
-    z-index: 300;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 180px;
-    font-weight: 1000;
-    font-style: italic;
-
-    color: white;
-
-    text-shadow:
-        0 0 20px #00eaff,
-        0 0 80px #7b3cff;
-
-    pointer-events: none;
-}
-
-.finish {
-    position: fixed;
-    inset: 0;
-    z-index: 500;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(0,0,0,.65);
-    backdrop-filter: blur(8px);
-}
-
-.finish-box {
-    width: min(550px, 90vw);
-    padding: 50px;
-    text-align: center;
-
-    border-radius: 30px;
-    background: rgba(10,15,30,.95);
-    border: 1px solid rgba(255,255,255,.2);
-
-    box-shadow: 0 30px 100px rgba(0,0,0,.8);
-}
-
-.finish-title {
-    font-size: 55px;
-    font-weight: 1000;
-    color: #00eaff;
-}
-
-#finishPosition {
-    margin-top: 20px;
-    font-size: 120px;
-    font-weight: 1000;
-}
-
-.finish-text {
-    color: #999;
-    margin-bottom: 30px;
-}
-
-@media(max-width:700px) {
-
-    .driver-list {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .menu-box,
-    .garage-box,
-    .controller-box {
-        padding: 25px;
-    }
-
-    .position {
-        font-size: 48px;
-    }
-
-    .speed b {
-        font-size: 30px;
-    }
-
-    .lap {
-        padding: 8px 12px;
-    }
-
-    .nitro-box {
-        width: 180px;
-    }
-}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turbo Racers 3D</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="loading">
+    <div class="loading-box">
+        <div class="logo">TURBO RACERS</div>
+        <div class="loading-bar">
+            <div id="loadingProgress"></div>
+        </div>
+        <div id="loadingText">Ładowanie silnika 3D...</div>
+    </div>
+</div>
+
+<!-- MENU -->
+<section id="menu" class="screen">
+
+    <div class="menu-background"></div>
+
+    <div class="menu-content">
+
+        <div class="game-logo">
+            <span>TURBO</span>
+            <strong>RACERS</strong>
+            <small>3D</small>
+        </div>
+
+        <p class="subtitle">
+            ORIGINAL KART RACING
+        </p>
+
+        <div class="menu-buttons">
+
+            <button id="startButton" class="main-button">
+                🏁 START WYŚCIGU
+            </button>
+
+            <button id="garageButton" class="menu-button">
+                🚗 GARAŻ
+            </button>
+
+            <button id="controllerButton" class="menu-button">
+                📱 KONTROLER
+            </button>
+
+        </div>
+
+        <div class="controls-info">
+            <div>WASD / STRZAŁKI — JAZDA</div>
+            <div>SHIFT — DRIFT</div>
+            <div>SPACE — TURBO</div>
+            <div>E — ITEM</div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- GARAŻ -->
+<section id="garage" class="screen hidden">
+
+    <div class="garage-header">
+        <button id="garageBack" class="back-button">← MENU</button>
+        <h1>GARAŻ</h1>
+    </div>
+
+    <div class="garage-content">
+
+        <div class="preview-card">
+            <canvas id="previewCanvas"></canvas>
+            <h2 id="selectedName">BLAZE</h2>
+            <p id="selectedDescription">
+                Szybki i zrównoważony kierowca.
+            </p>
+        </div>
+
+        <div class="driver-list">
+
+            <button class="driver-card selected" data-driver="0">
+                <span class="driver-icon">🔥</span>
+                <b>BLAZE</b>
+                <small>Szybkość</small>
+            </button>
+
+            <button class="driver-card" data-driver="1">
+                <span class="driver-icon">⚡</span>
+                <b>VOLT</b>
+                <small>Turbo</small>
+            </button>
+
+            <button class="driver-card" data-driver="2">
+                <span class="driver-icon">🌪️</span>
+                <b>STORM</b>
+                <small>Drift</small>
+            </button>
+
+            <button class="driver-card" data-driver="3">
+                <span class="driver-icon">🛡️</span>
+                <b>TITAN</b>
+                <small>Kontrola</small>
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- KONTROLER -->
+<section id="controllerScreen" class="screen hidden">
+
+    <div class="controller-box">
+
+        <button id="controllerBack" class="back-button">
+            ← MENU
+        </button>
+
+        <h1>📱 KONTROLER TELEFONOWY</h1>
+
+        <p>
+            Otwórz poniższy adres na telefonie.
+        </p>
+
+        <div id="controllerUrl" class="controller-url">
+            Ładowanie...
+        </div>
+
+        <div class="qr-placeholder">
+            📱
+        </div>
+
+        <div class="controller-status">
+            <span id="connectionDot"></span>
+            <span id="connectionText">
+                Oczekiwanie na telefon...
+            </span>
+        </div>
+
+        <p class="small-info">
+            Telefon i komputer muszą być podłączone do tego samego
+            systemu komunikacji.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- GRA -->
+<section id="game" class="screen hidden">
+
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- HUD -->
+    <div id="hud">
+
+        <div class="hud-top">
+
+            <div class="position-box">
+                <small>POZYCJA</small>
+                <strong id="position">1</strong>
+                <span>/ 4</span>
+            </div>
+
+            <div class="lap-box">
+                <small>OKRĄŻENIE</small>
+                <strong id="lap">1</strong>
+                <span>/ 3</span>
+            </div>
+
+            <div class="speed-box">
+                <small>PRĘDKOŚĆ</small>
+                <strong id="speed">0</strong>
+                <span>KM/H</span>
+            </div>
+
+        </div>
+
+        <div id="itemBox">
+            <span>ITEM</span>
+            <strong id="itemIcon">?</strong>
+        </div>
+
+        <div id="boostBar">
+            <div id="boostFill"></div>
+            <span>TURBO</span>
+        </div>
+
+        <div id="miniMap">
+            <div id="mapPlayer"></div>
+            <div id="mapAI1"></div>
+            <div id="mapAI2"></div>
+            <div id="mapAI3"></div>
+        </div>
+
+    </div>
+
+
+    <!-- COUNTDOWN -->
+    <div id="countdown" class="hidden">
+        3
+    </div>
+
+
+    <!-- FINISH -->
+    <div id="finish" class="hidden">
+
+        <div class="finish-box">
+
+            <div class="finish-title">
+                META!
+            </div>
+
+            <div class="finish-position">
+                <span>Zająłeś</span>
+                <strong id="finalPosition">1</strong>
+                <span>miejsce</span>
+            </div>
+
+            <div class="finish-buttons">
+
+                <button id="restartButton" class="main-button">
+                    🔄 JESZCZE RAZ
+                </button>
+
+                <button id="finishMenu" class="menu-button">
+                    MENU
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script type="module" src="game.js"></script>
+
+</body>
+</html>
