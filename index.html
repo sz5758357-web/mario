@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Drift Kart</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="loading">
+        <div class="loading-logo">SUPER DRIFT KART</div>
+        <div class="loading-bar">
+            <div id="loading-progress"></div>
+        </div>
+        <div>Ładowanie toru...</div>
+    </div>
+
+    <div id="menu" class="hidden">
+
+        <div class="menu-background"></div>
+
+        <div class="logo">
+            <span>SUPER</span>
+            <strong>DRIFT KART</strong>
+        </div>
+
+        <div class="menu-kart">
+            <div class="kart-body"></div>
+            <div class="kart-wheel wheel-left"></div>
+            <div class="kart-wheel wheel-right"></div>
+        </div>
+
+        <div class="menu-buttons">
+
+            <button id="startButton" class="main-button">
+                <span>▶</span>
+                ROZPOCZNIJ WYŚCIG
+            </button>
+
+            <button id="controlsButton">
+                🎮 STEROWANIE
+            </button>
+
+            <button id="fullscreenButton">
+                ⛶ PEŁNY EKRAN
+            </button>
+
+        </div>
+
+        <div class="version">
+            SUPER DRIFT KART • WEB EDITION
+        </div>
+
+    </div>
+
+    <div id="controlsPanel" class="panel hidden">
+
+        <div class="panel-box">
+
+            <button class="close-panel" id="closeControls">×</button>
+
+            <h2>STEROWANIE</h2>
+
+            <div class="control-grid">
+
+                <div>
+                    <span class="key">W</span>
+                    <span>Gaz</span>
+                </div>
+
+                <div>
+                    <span class="key">S</span>
+                    <span>Hamulec / wstecz</span>
+                </div>
+
+                <div>
+                    <span class="key">A</span>
+                    <span>Skręt w lewo</span>
+                </div>
+
+                <div>
+                    <span class="key">D</span>
+                    <span>Skręt w prawo</span>
+                </div>
+
+                <div>
+                    <span class="key">SPACE</span>
+                    <span>Drift</span>
+                </div>
+
+                <div>
+                    <span class="key">E</span>
+                    <span>Użyj itemu</span>
+                </div>
+
+                <div>
+                    <span class="key">SHIFT</span>
+                    <span>Nitro</span>
+                </div>
+
+                <div>
+                    <span class="key">ESC</span>
+                    <span>Pauza</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="game">
+
+        <div id="hud">
+
+            <div class="hud-top">
+
+                <div class="position-box">
+                    <span id="position">1</span>
+                    <small>POZYCJA</small>
+                </div>
+
+                <div class="lap-box">
+                    OKRĄŻENIE
+                    <strong id="lap">1 / 3</strong>
+                </div>
+
+                <div class="item-box">
+                    <span id="itemIcon">?</span>
+                </div>
+
+            </div>
+
+            <div class="speed-box">
+                <strong id="speed">0</strong>
+                <small>KM/H</small>
+            </div>
+
+            <div class="nitro-container">
+                <span>NITRO</span>
+                <div class="nitro-bar">
+                    <div id="nitro"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="countdown">
+            <span id="countdownText">3</span>
+        </div>
+
+        <div id="driftIndicator">
+            DRIFT
+        </div>
+
+        <div id="pauseScreen" class="hidden">
+
+            <div class="pause-box">
+
+                <h1>PAUZA</h1>
+
+                <button id="resumeButton">
+                    ▶ WRÓĆ DO GRY
+                </button>
+
+                <button id="menuButton">
+                    ☰ MENU
+                </button>
+
+            </div>
+
+        </div>
+
+        <div id="finishScreen" class="hidden">
+
+            <div class="finish-box">
+
+                <div class="finish-title">
+                    WYŚCIG UKOŃCZONY!
+                </div>
+
+                <div class="trophy">🏆</div>
+
+                <div id="finishPosition">
+                    1 MIEJSCE
+                </div>
+
+                <button id="restartButton">
+                    ↻ JESZCZE RAZ
+                </button>
+
+                <button id="finishMenuButton">
+                    ☰ MENU
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script type="module" src="game.js"></script>
+
+</body>
+</html>
