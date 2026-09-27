@@ -3,139 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turbo Kart Arena</title>
+    <title>Turbo Racers 3D</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div id="menu" class="screen">
-    <div class="menu-box">
-        <div class="logo">TURBO<br><span>KART</span></div>
-        <div class="subtitle">ARENA</div>
-
-        <button id="startButton" class="main-button">
-            START WYŚCIGU
-        </button>
-
-        <button id="garageButton" class="menu-button">
-            GARAŻ
-        </button>
-
-        <button id="controllerButton" class="menu-button">
-            KONTROLERY
-        </button>
-
-        <div class="small-info">
-            W / ↑ — GAZ<br>
-            S / ↓ — HAMULEC<br>
-            A / ← — LEWO &nbsp;&nbsp; D / → — PRAWO<br>
-            SHIFT — DRIFT &nbsp;&nbsp; E — ITEM
+<div id="loading">
+    <div class="loading-box">
+        <div class="logo">TURBO RACERS</div>
+        <div class="loading-bar">
+            <div id="loadingProgress"></div>
         </div>
+        <div id="loadingText">Ładowanie silnika 3D...</div>
     </div>
 </div>
 
-<div id="garage" class="screen hidden">
-    <div class="garage-box">
+<!-- MENU -->
+<section id="menu" class="screen">
+
+    <div class="menu-background"></div>
+
+    <div class="menu-content">
+
+        <div class="game-logo">
+            <span>TURBO</span>
+            <strong>RACERS</strong>
+            <small>3D</small>
+        </div>
+
+        <p class="subtitle">
+            ORIGINAL KART RACING
+        </p>
+
+        <div class="menu-buttons">
+
+            <button id="startButton" class="main-button">
+                🏁 START WYŚCIGU
+            </button>
+
+            <button id="garageButton" class="menu-button">
+                🚗 GARAŻ
+            </button>
+
+            <button id="controllerButton" class="menu-button">
+                📱 KONTROLER
+            </button>
+
+        </div>
+
+        <div class="controls-info">
+            <div>WASD / STRZAŁKI — JAZDA</div>
+            <div>SHIFT — DRIFT</div>
+            <div>SPACE — TURBO</div>
+            <div>E — ITEM</div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- GARAŻ -->
+<section id="garage" class="screen hidden">
+
+    <div class="garage-header">
+        <button id="garageBack" class="back-button">← MENU</button>
         <h1>GARAŻ</h1>
+    </div>
+
+    <div class="garage-content">
+
+        <div class="preview-card">
+            <canvas id="previewCanvas"></canvas>
+            <h2 id="selectedName">BLAZE</h2>
+            <p id="selectedDescription">
+                Szybki i zrównoważony kierowca.
+            </p>
+        </div>
 
         <div class="driver-list">
 
-            <button class="driver active" data-driver="0">
-                <div class="driver-icon red">⚡</div>
+            <button class="driver-card selected" data-driver="0">
+                <span class="driver-icon">🔥</span>
+                <b>BLAZE</b>
+                <small>Szybkość</small>
+            </button>
+
+            <button class="driver-card" data-driver="1">
+                <span class="driver-icon">⚡</span>
                 <b>VOLT</b>
-                <small>Prędkość</small>
+                <small>Turbo</small>
             </button>
 
-            <button class="driver" data-driver="1">
-                <div class="driver-icon blue">★</div>
-                <b>NOVA</b>
-                <small>Przyspieszenie</small>
-            </button>
-
-            <button class="driver" data-driver="2">
-                <div class="driver-icon green">◆</div>
-                <b>RUSH</b>
-                <small>Skręcanie</small>
-            </button>
-
-            <button class="driver" data-driver="3">
-                <div class="driver-icon purple">☄</div>
-                <b>PIXEL</b>
+            <button class="driver-card" data-driver="2">
+                <span class="driver-icon">🌪️</span>
+                <b>STORM</b>
                 <small>Drift</small>
             </button>
 
+            <button class="driver-card" data-driver="3">
+                <span class="driver-icon">🛡️</span>
+                <b>TITAN</b>
+                <small>Kontrola</small>
+            </button>
+
         </div>
 
-        <button id="garageBack" class="menu-button">
-            WRÓĆ
-        </button>
     </div>
-</div>
 
-<div id="controllerScreen" class="screen hidden">
+</section>
+
+
+<!-- KONTROLER -->
+<section id="controllerScreen" class="screen hidden">
+
     <div class="controller-box">
-        <h1>KONTROLERY</h1>
 
-        <p>Uruchom wyścig na komputerze.</p>
-        <p>Na ekranie gry pojawi się kod dla telefonu.</p>
+        <button id="controllerBack" class="back-button">
+            ← MENU
+        </button>
 
-        <div class="controller-url">
-            <span id="controllerUrl"></span>
+        <h1>📱 KONTROLER TELEFONOWY</h1>
+
+        <p>
+            Otwórz poniższy adres na telefonie.
+        </p>
+
+        <div id="controllerUrl" class="controller-url">
+            Ładowanie...
         </div>
 
-        <button id="controllerBack" class="menu-button">
-            WRÓĆ
-        </button>
-    </div>
-</div>
+        <div class="qr-placeholder">
+            📱
+        </div>
 
-<div id="game" class="hidden">
+        <div class="controller-status">
+            <span id="connectionDot"></span>
+            <span id="connectionText">
+                Oczekiwanie na telefon...
+            </span>
+        </div>
+
+        <p class="small-info">
+            Telefon i komputer muszą być podłączone do tego samego
+            systemu komunikacji.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- GRA -->
+<section id="game" class="screen hidden">
 
     <canvas id="gameCanvas"></canvas>
 
+    <!-- HUD -->
     <div id="hud">
 
         <div class="hud-top">
 
-            <div class="position">
-                <span id="positionNumber">1</span>
-                <small>/ 4</small>
+            <div class="position-box">
+                <small>POZYCJA</small>
+                <strong id="position">1</strong>
+                <span>/ 4</span>
             </div>
 
-            <div class="lap">
-                OKRĄŻENIE
-                <b id="lapNumber">1/3</b>
+            <div class="lap-box">
+                <small>OKRĄŻENIE</small>
+                <strong id="lap">1</strong>
+                <span>/ 3</span>
             </div>
 
-            <div class="speed">
-                <b id="speedNumber">0</b>
-                <small>KM/H</small>
+            <div class="speed-box">
+                <small>PRĘDKOŚĆ</small>
+                <strong id="speed">0</strong>
+                <span>KM/H</span>
             </div>
 
         </div>
 
-        <div class="item-box">
-            <span id="itemIcon">?</span>
+        <div id="itemBox">
+            <span>ITEM</span>
+            <strong id="itemIcon">?</strong>
         </div>
 
-        <div class="nitro-box">
-            <div class="nitro-title">TURBO</div>
-            <div class="nitro-bar">
-                <div id="nitroFill"></div>
-            </div>
+        <div id="boostBar">
+            <div id="boostFill"></div>
+            <span>TURBO</span>
         </div>
 
-        <div id="roomCode" class="room-code">
-            TRYB PC
+        <div id="miniMap">
+            <div id="mapPlayer"></div>
+            <div id="mapAI1"></div>
+            <div id="mapAI2"></div>
+            <div id="mapAI3"></div>
         </div>
 
     </div>
 
-    <div id="countdown" class="countdown hidden">
+
+    <!-- COUNTDOWN -->
+    <div id="countdown" class="hidden">
         3
     </div>
 
-    <div id="finish" class="finish hidden">
+
+    <!-- FINISH -->
+    <div id="finish" class="hidden">
 
         <div class="finish-box">
 
@@ -143,29 +219,32 @@
                 META!
             </div>
 
-            <div id="finishPosition">
-                1
+            <div class="finish-position">
+                <span>Zająłeś</span>
+                <strong id="finalPosition">1</strong>
+                <span>miejsce</span>
             </div>
 
-            <div class="finish-text">
-                MIEJSCE
+            <div class="finish-buttons">
+
+                <button id="restartButton" class="main-button">
+                    🔄 JESZCZE RAZ
+                </button>
+
+                <button id="finishMenu" class="menu-button">
+                    MENU
+                </button>
+
             </div>
-
-            <button id="restartButton" class="main-button">
-                JESZCZE RAZ
-            </button>
-
-            <button id="finishMenu" class="menu-button">
-                MENU
-            </button>
 
         </div>
 
     </div>
 
-</div>
+</section>
 
-<script src="game.js"></script>
+
+<script type="module" src="game.js"></script>
 
 </body>
 </html>
