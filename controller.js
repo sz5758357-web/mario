@@ -1,349 +1,247 @@
-const waiting = document.getElementById("waiting");
-const controller = document.getElementById("controller");
+"use strict";
+
+let peer = null;
+let connection = null;
+
+const controls = {
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+    drift: false
+};
+
+const roomInput =
+    document.getElementById("roomInput");
 
 const connectButton =
     document.getElementById("connectButton");
 
-const joystick =
-    document.getElementById("joystick");
+const status =
+    document.getElementById("status");
 
-const joystickKnob =
-    document.getElementById("joystickKnob");
+const connectPanel =
+    document.getElementById("connectPanel");
 
-const gasButton =
-    document.getElementById("gasButton");
+const controlsPanel =
+    document.getElementById("controls");
 
-const brakeButton =
-    document.getElementById("brakeButton");
-
-const driftButton =
-    document.getElementById("driftButton");
-
-const boostButton =
-    document.getElementById("boostButton");
-
-const itemButton =
-    document.getElementById("itemButton");
-
-
-let connected = false;
-
-let joystickX = 0;
-let joystickY = 0;
-
-let controls = {
-
-    left: false,
-    right: false,
-
-    gas: false,
-    brake: false,
-
-    drift: false,
-    boost: false,
-
-    item: false
-
-};
-
-
-// =====================================================
-// CONNECT
-// =====================================================
-
-connectButton.addEventListener(
-    "click",
-    () => {
-
-        connected = true;
-
-        waiting.style.display =
-            "none";
-
-        controller.style.display =
-            "flex";
-
-        if (navigator.vibrate) {
-
-            navigator.vibrate(50);
-
-        }
-
-    }
-);
-
-
-// =====================================================
-// JOYSTICK
-// =====================================================
-
-let joystickActive = false;
-
-
-function updateJoystick(
-    clientX,
-    clientY
-) {
-
-    const rect =
-        joystick.getBoundingClientRect();
-
-    const centerX =
-        rect.left +
-        rect.width / 2;
-
-    const centerY =
-        rect.top +
-        rect.height / 2;
-
-    let x =
-        clientX -
-        centerX;
-
-    let y =
-        clientY -
-        centerY;
-
-    const radius =
-        rect.width / 2;
-
-    const distance =
-        Math.sqrt(
-            x * x +
-            y * y
-        );
-
-
-    if (distance > radius) {
-
-        x =
-            x / distance *
-            radius;
-
-        y =
-            y / distance *
-            radius;
-
-    }
-
-
-    joystickX =
-        x / radius;
-
-    joystickY =
-        y / radius;
-
-
-    joystickKnob.style.transform =
-        `translate(
-            calc(-50% + ${x}px),
-            calc(-50% + ${y}px)
-        )`;
-
-
-    controls.left =
-        joystickX < -.25;
-
-    controls.right =
-        joystickX > .25;
-
-
-    sendControls();
-
-}
-
-
-function resetJoystick() {
-
-    joystickX = 0;
-    joystickY = 0;
-
-    controls.left = false;
-    controls.right = false;
-
-    joystickKnob.style.transform =
-        "translate(-50%, -50%)";
-
-    sendControls();
-
-}
-
-
-joystick.addEventListener(
-    "pointerdown",
-    event => {
-
-        joystickActive = true;
-
-        joystick.setPointerCapture(
-            event.pointerId
-        );
-
-        updateJoystick(
-            event.clientX,
-            event.clientY
-        );
-
-    }
-);
-
-
-joystick.addEventListener(
-    "pointermove",
-    event => {
-
-        if (!joystickActive) return;
-
-        updateJoystick(
-            event.clientX,
-            event.clientY
-        );
-
-    }
-);
-
-
-joystick.addEventListener(
-    "pointerup",
-    () => {
-
-        joystickActive = false;
-
-        resetJoystick();
-
-    }
-);
-
-
-joystick.addEventListener(
-    "pointercancel",
-    () => {
-
-        joystickActive = false;
-
-        resetJoystick();
-
-    }
-);
-
-
-// =====================================================
-// BUTTON HELPER
-// =====================================================
-
-function bindButton(
-    element,
-    property
-) {
-
-    element.addEventListener(
-        "pointerdown",
-        event => {
-
-            event.preventDefault();
-
-            controls[property] = true;
-
-            if (navigator.vibrate) {
-
-                navigator.vibrate(20);
-
-            }
-
-            sendControls();
-
-        }
-    );
-
-
-    const release = () => {
-
-        controls[property] = false;
-
-        sendControls();
-
-    };
-
-
-    element.addEventListener(
-        "pointerup",
-        release
-    );
-
-    element.addEventListener(
-        "pointercancel",
-        release
-    );
-
-    element.addEventListener(
-        "pointerleave",
-        release
-    );
-
-}
-
-
-bindButton(
-    gasButton,
-    "gas"
-);
-
-bindButton(
-    brakeButton,
-    "brake"
-);
-
-bindButton(
-    driftButton,
-    "drift"
-);
-
-bindButton(
-    boostButton,
-    "boost"
-);
-
-bindButton(
-    itemButton,
-    "item"
-);
-
-
-// =====================================================
-// CONTROLLER DATA
-// =====================================================
+const playerSelect =
+    document.getElementById("playerSelect");
 
 function sendControls() {
 
-    /*
-        W tej wersji kontroler jest gotowy
-        wizualnie i funkcjonalnie.
+    if (!connection || !connection.open) {
+        return;
+    }
 
-        W kolejnym etapie podłączymy tutaj
-        WebRTC/WebSocket, aby dane trafiały
-        do gry na komputerze.
-    */
+    connection.send({
+        type: "control",
 
-    const data = {
+        player:
+            Number(playerSelect.value),
 
-        ...controls,
+        controls: {
+            ...controls
+        }
+    });
 
-        joystickX,
-        joystickY,
+}
 
-        timestamp:
-            Date.now()
+function setControl(key, value) {
+
+    controls[key] = value;
+
+    sendControls();
+
+}
+
+function setupButton(button) {
+
+    const key = button.dataset.key;
+
+    if (!key) return;
+
+    const start = event => {
+
+        event.preventDefault();
+
+        setControl(key, true);
 
     };
 
+    const end = event => {
 
-    window.dispatchEvent(
-        new CustomEvent(
-            "controllerInput",
-            {
-                detail: data
-            }
-        )
+        event.preventDefault();
+
+        setControl(key, false);
+
+    };
+
+    button.addEventListener(
+        "touchstart",
+        start,
+        { passive: false }
+    );
+
+    button.addEventListener(
+        "touchend",
+        end,
+        { passive: false }
+    );
+
+    button.addEventListener(
+        "touchcancel",
+        end,
+        { passive: false }
+    );
+
+    button.addEventListener(
+        "mousedown",
+        start
+    );
+
+    button.addEventListener(
+        "mouseup",
+        end
+    );
+
+    button.addEventListener(
+        "mouseleave",
+        end
     );
 
 }
+
+document
+    .querySelectorAll("[data-key]")
+    .forEach(setupButton);
+
+document.getElementById(
+    "itemButton"
+).addEventListener("click", () => {
+
+    if (!connection || !connection.open) {
+        return;
+    }
+
+    connection.send({
+        type: "item"
+    });
+
+});
+
+connectButton.onclick = () => {
+
+    const room =
+        roomInput.value.trim();
+
+    if (!room) {
+
+        status.textContent =
+            "Wpisz kod pokoju.";
+
+        return;
+
+    }
+
+    if (!window.Peer) {
+
+        status.textContent =
+            "Nie udało się załadować kontrolera.";
+
+        return;
+
+    }
+
+    status.textContent =
+        "Łączenie...";
+
+    peer = new Peer();
+
+    peer.on("open", () => {
+
+        connection =
+            peer.connect(room);
+
+        connection.on("open", () => {
+
+            status.textContent =
+                "POŁĄCZONO ✓";
+
+            connectPanel.classList.add(
+                "hidden"
+            );
+
+            controlsPanel.classList.remove(
+                "hidden"
+            );
+
+            sendControls();
+
+        });
+
+        connection.on("close", () => {
+
+            status.textContent =
+                "Połączenie zakończone.";
+
+            connectPanel.classList.remove(
+                "hidden"
+            );
+
+            controlsPanel.classList.add(
+                "hidden"
+            );
+
+        });
+
+        connection.on("error", () => {
+
+            status.textContent =
+                "Błąd połączenia.";
+
+        });
+
+    });
+
+    peer.on("error", error => {
+
+        console.error(error);
+
+        status.textContent =
+            "Nie można połączyć. Sprawdź kod.";
+
+    });
+
+};
+
+playerSelect.onchange = sendControls;
+
+/* Nie pozwalaj telefonowi zasnąć podczas gry,
+   jeśli przeglądarka obsługuje Wake Lock. */
+
+let wakeLock = null;
+
+async function keepScreenAwake() {
+
+    try {
+
+        if ("wakeLock" in navigator) {
+
+            wakeLock =
+                await navigator.wakeLock.request(
+                    "screen"
+                );
+
+        }
+
+    } catch {}
+
+}
+
+document.addEventListener(
+    "touchstart",
+    keepScreenAwake,
+    { once: true }
+);
