@@ -1,247 +1,352 @@
 "use strict";
 
-let peer = null;
-let connection = null;
 
-const controls = {
-    up: false,
-    down: false,
+/* =========================================================
+   CONTROLLER STATE
+========================================================= */
+
+const state = {
+
     left: false,
     right: false,
-    drift: false
+
+    gas: false,
+    brake: false,
+
+    drift: false,
+    boost: false,
+
+    item: false
+
 };
 
-const roomInput =
-    document.getElementById("roomInput");
 
-const connectButton =
-    document.getElementById("connectButton");
+/* =========================================================
+   STATUS
+========================================================= */
 
-const status =
-    document.getElementById("status");
+const statusElement =
+    document.getElementById(
+        "status"
+    );
 
-const connectPanel =
-    document.getElementById("connectPanel");
 
-const controlsPanel =
-    document.getElementById("controls");
+function setStatus(text, connected = false) {
 
-const playerSelect =
-    document.getElementById("playerSelect");
+    statusElement.textContent =
+        text;
 
-function sendControls() {
+    statusElement.style.color =
+        connected
+            ? "#20e070"
+            : "#ffb000";
 
-    if (!connection || !connection.open) {
-        return;
+}
+
+
+/* =========================================================
+   SEND COMMAND
+========================================================= */
+
+function sendCommand(
+    button,
+    pressed
+) {
+
+    const command = {
+
+        type: "controller",
+
+        button,
+
+        pressed,
+
+        timestamp:
+            Date.now()
+
+    };
+
+
+    /*
+       Na razie zapisujemy ostatnią
+       komendę lokalnie.
+
+       W następnym etapie można podłączyć
+       WebRTC / WebSocket bez zmiany
+       wyglądu kontrolera.
+    */
+
+    try {
+
+        localStorage.setItem(
+            "turboControllerCommand",
+            JSON.stringify(command)
+        );
+
+    }
+    catch (error) {
+
+        console.warn(
+            "Nie można zapisać komendy",
+            error
+        );
+
     }
 
-    connection.send({
-        type: "control",
 
-        player:
-            Number(playerSelect.value),
-
-        controls: {
-            ...controls
-        }
-    });
-
-}
-
-function setControl(key, value) {
-
-    controls[key] = value;
-
-    sendControls();
+    window.dispatchEvent(
+        new CustomEvent(
+            "turbo-controller",
+            {
+                detail: command
+            }
+        )
+    );
 
 }
 
-function setupButton(button) {
 
-    const key = button.dataset.key;
+/* =========================================================
+   BUTTON HELPER
+========================================================= */
 
-    if (!key) return;
+function setupHoldButton(
+    id,
+    key
+) {
 
-    const start = event => {
+    const button =
+        document.getElementById(id);
+
+
+    if (!button) {
+
+        console.error(
+            "Brak przycisku:",
+            id
+        );
+
+        return;
+
+    }
+
+
+    const press = event => {
 
         event.preventDefault();
 
-        setControl(key, true);
+        if (state[key])
+            return;
+
+        state[key] = true;
+
+        button.classList.add(
+            "pressed"
+        );
+
+        sendCommand(
+            key,
+            true
+        );
 
     };
 
-    const end = event => {
+
+    const release = event => {
 
         event.preventDefault();
 
-        setControl(key, false);
+        if (!state[key])
+            return;
+
+        state[key] = false;
+
+        button.classList.remove(
+            "pressed"
+        );
+
+        sendCommand(
+            key,
+            false
+        );
 
     };
+
 
     button.addEventListener(
         "touchstart",
-        start,
-        { passive: false }
+        press,
+        {
+            passive: false
+        }
     );
 
     button.addEventListener(
         "touchend",
-        end,
-        { passive: false }
+        release,
+        {
+            passive: false
+        }
     );
 
     button.addEventListener(
         "touchcancel",
-        end,
-        { passive: false }
+        release,
+        {
+            passive: false
+        }
     );
+
 
     button.addEventListener(
         "mousedown",
-        start
+        press
     );
 
     button.addEventListener(
         "mouseup",
-        end
+        release
     );
 
     button.addEventListener(
         "mouseleave",
-        end
+        release
     );
 
 }
 
-document
-    .querySelectorAll("[data-key]")
-    .forEach(setupButton);
 
-document.getElementById(
-    "itemButton"
-).addEventListener("click", () => {
+/* =========================================================
+   CONTROLS
+========================================================= */
 
-    if (!connection || !connection.open) {
-        return;
+setupHoldButton(
+    "left",
+    "left"
+);
+
+setupHoldButton(
+    "right",
+    "right"
+);
+
+setupHoldButton(
+    "gas",
+    "gas"
+);
+
+setupHoldButton(
+    "brake",
+    "brake"
+);
+
+setupHoldButton(
+    "drift",
+    "drift"
+);
+
+setupHoldButton(
+    "boost",
+    "boost"
+);
+
+
+/* =========================================================
+   ITEM
+========================================================= */
+
+const itemButton =
+    document.getElementById(
+        "item"
+    );
+
+
+itemButton.addEventListener(
+    "touchstart",
+    event => {
+
+        event.preventDefault();
+
+        sendCommand(
+            "item",
+            true
+        );
+
+    },
+    {
+        passive: false
     }
+);
 
-    connection.send({
-        type: "item"
-    });
 
-});
+itemButton.addEventListener(
+    "click",
+    event => {
 
-connectButton.onclick = () => {
+        event.preventDefault();
 
-    const room =
-        roomInput.value.trim();
-
-    if (!room) {
-
-        status.textContent =
-            "Wpisz kod pokoju.";
-
-        return;
+        sendCommand(
+            "item",
+            true
+        );
 
     }
+);
 
-    if (!window.Peer) {
 
-        status.textContent =
-            "Nie udało się załadować kontrolera.";
+/* =========================================================
+   CONNECTION UI
+========================================================= */
 
-        return;
+setStatus(
+    "KONTROLER GOTOWY",
+    true
+);
 
-    }
 
-    status.textContent =
-        "Łączenie...";
-
-    peer = new Peer();
-
-    peer.on("open", () => {
-
-        connection =
-            peer.connect(room);
-
-        connection.on("open", () => {
-
-            status.textContent =
-                "POŁĄCZONO ✓";
-
-            connectPanel.classList.add(
-                "hidden"
-            );
-
-            controlsPanel.classList.remove(
-                "hidden"
-            );
-
-            sendControls();
-
-        });
-
-        connection.on("close", () => {
-
-            status.textContent =
-                "Połączenie zakończone.";
-
-            connectPanel.classList.remove(
-                "hidden"
-            );
-
-            controlsPanel.classList.add(
-                "hidden"
-            );
-
-        });
-
-        connection.on("error", () => {
-
-            status.textContent =
-                "Błąd połączenia.";
-
-        });
-
-    });
-
-    peer.on("error", error => {
-
-        console.error(error);
-
-        status.textContent =
-            "Nie można połączyć. Sprawdź kod.";
-
-    });
-
-};
-
-playerSelect.onchange = sendControls;
-
-/* Nie pozwalaj telefonowi zasnąć podczas gry,
-   jeśli przeglądarka obsługuje Wake Lock. */
-
-let wakeLock = null;
-
-async function keepScreenAwake() {
-
-    try {
-
-        if ("wakeLock" in navigator) {
-
-            wakeLock =
-                await navigator.wakeLock.request(
-                    "screen"
-                );
-
-        }
-
-    } catch {}
-
-}
+/* =========================================================
+   PREVENT PHONE GESTURES
+========================================================= */
 
 document.addEventListener(
-    "touchstart",
-    keepScreenAwake,
-    { once: true }
+    "gesturestart",
+    event => {
+
+        event.preventDefault();
+
+    }
+);
+
+
+document.addEventListener(
+    "contextmenu",
+    event => {
+
+        event.preventDefault();
+
+    }
+);
+
+
+/* =========================================================
+   ORIENTATION
+========================================================= */
+
+window.addEventListener(
+    "orientationchange",
+    () => {
+
+        setTimeout(
+            () => {
+
+                window.scrollTo(
+                    0,
+                    0
+                );
+
+            },
+            100
+        );
+
+    }
 );
