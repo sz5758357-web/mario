@@ -8,27 +8,28 @@
 </head>
 <body>
 
-<div id="loading">
-    <div class="loading-logo">TURBO KART</div>
-    <div class="loading-bar">
-        <div id="loadingFill"></div>
-    </div>
-    <div>Ładowanie gry...</div>
-</div>
-
-<div id="menu" class="screen hidden">
+<div id="menu" class="screen">
     <div class="menu-box">
         <div class="logo">TURBO<br><span>KART</span></div>
         <div class="subtitle">ARENA</div>
 
-        <button id="startButton" class="main-button">START WYŚCIGU</button>
-        <button id="garageButton" class="menu-button">GARAŻ</button>
-        <button id="controllerButton" class="menu-button">KONTROLERY</button>
+        <button id="startButton" class="main-button">
+            START WYŚCIGU
+        </button>
+
+        <button id="garageButton" class="menu-button">
+            GARAŻ
+        </button>
+
+        <button id="controllerButton" class="menu-button">
+            KONTROLERY
+        </button>
 
         <div class="small-info">
-            PC: WASD / STRZAŁKI<br>
-            DRIFT: SHIFT<br>
-            ITEM: E
+            W / ↑ — GAZ<br>
+            S / ↓ — HAMULEC<br>
+            A / ← — LEWO &nbsp;&nbsp; D / → — PRAWO<br>
+            SHIFT — DRIFT &nbsp;&nbsp; E — ITEM
         </div>
     </div>
 </div>
@@ -65,7 +66,9 @@
 
         </div>
 
-        <button id="garageBack" class="menu-button">WRÓĆ</button>
+        <button id="garageBack" class="menu-button">
+            WRÓĆ
+        </button>
     </div>
 </div>
 
@@ -73,16 +76,16 @@
     <div class="controller-box">
         <h1>KONTROLERY</h1>
 
-        <p>Po uruchomieniu wyścigu na dole ekranu pojawi się kod pokoju.</p>
-        <p>Na telefonie otwórz:</p>
+        <p>Uruchom wyścig na komputerze.</p>
+        <p>Na ekranie gry pojawi się kod dla telefonu.</p>
 
         <div class="controller-url">
             <span id="controllerUrl"></span>
         </div>
 
-        <p>Wpisz kod pokazany na ekranie PC.</p>
-
-        <button id="controllerBack" class="menu-button">WRÓĆ</button>
+        <button id="controllerBack" class="menu-button">
+            WRÓĆ
+        </button>
     </div>
 </div>
 
@@ -122,21 +125,31 @@
             </div>
         </div>
 
-        <div id="roomCode" class="room-code"></div>
+        <div id="roomCode" class="room-code">
+            TRYB PC
+        </div>
 
     </div>
 
-    <div id="countdown" class="countdown hidden">3</div>
+    <div id="countdown" class="countdown hidden">
+        3
+    </div>
 
     <div id="finish" class="finish hidden">
 
         <div class="finish-box">
 
-            <div class="finish-title">META!</div>
+            <div class="finish-title">
+                META!
+            </div>
 
-            <div id="finishPosition">1</div>
+            <div id="finishPosition">
+                1
+            </div>
 
-            <div class="finish-text">MIEJSCE</div>
+            <div class="finish-text">
+                MIEJSCE
+            </div>
 
             <button id="restartButton" class="main-button">
                 JESZCZE RAZ
@@ -152,7 +165,6 @@
 
 </div>
 
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="game.js"></script>
 
 </body>
